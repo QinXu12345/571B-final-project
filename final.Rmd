@@ -40,7 +40,37 @@ ranova(wm_lmer)
 ```
 
 ```{r}
+# Check normality
+qqnorm(residuals(wm_lmer))
+qqline(residuals(wm_lmer))
+
+#Residuals
 plot(wm_lmer,which=4)
+```
+```{r, include=FALSE, echo=FALSE}
+
+# Check constant variance
+plot(fitted(wm_lmer), residuals(wm_lmer),
+     xlab = "Fitted", ylab = "Residuals",
+     main = "Residuals vs. Fitted")
+```
+
+```{r}
+# Interaction Plot
+
+# Estimate Marginal Means
+library(emmeans)
+emm_wm_lmer <- emmeans(wm_lmer, ~ Time * Activity) 
+emm_df_wm_lmer <- as.data.frame(emm_wm_lmer) #as DF
+
+# Use ggplot2 for the interaction plot
+library(ggplot2)
+ggplot(emm_df_wm_lmer, aes(x = Time, y = emmean, group = Activity, color = Activity)) +
+  geom_point(size = 3) +
+  geom_line() +
+  labs(title = "Interaction Plot: Time x Activity\nRandom effect of not studying the interaction of blocking factor", 
+       y = "Estimated Marginal Mean of Score") +
+  theme_minimal()
 ```
 
 ### Fixed effect of not studying the interaction of blocking factor
@@ -57,7 +87,30 @@ summary(wm_aov)
 ```
 
 ```{r}
-plot(wm_aov2,which=2)
+# Check normality
+qqnorm(residuals(wm_aov))
+qqline(residuals(wm_aov))
+
+# Check constant variance
+plot(fitted(wm_aov), residuals(wm_aov),
+     xlab = "Fitted", ylab = "Residuals",
+     main = "Residuals vs. Fitted")
+```
+
+```{r}
+# Interaction Plot
+
+# Estimate Marginal Means
+emm_wm_aov <- emmeans(wm_aov, ~ Time * Activity) 
+emm_df_wm_aov <- as.data.frame(emm_wm_aov) #as DF
+
+# Interaction plot
+ggplot(emm_df_wm_aov, aes(x = Time, y = emmean, group = Activity, color = Activity)) +
+  geom_point(size = 3) +
+  geom_line() +
+  labs(title = "Interaction Plot: Time x Activity\nFixed effect of not studying the interaction of blocking factor", 
+       y = "Estimated Marginal Mean of Score") +
+  theme_minimal()
 ```
 
 ### Fixed effect of study the interaction of blocking factor
@@ -71,6 +124,32 @@ wm_aov2 <- aov(Score ~ Time * Activity * User,
 
 ```{r}
 anova(wm_aov2)
+```
+
+```{r}
+plot(wm_aov2,which=2)
+
+# Check constant variance
+plot(fitted(wm_aov2), residuals(wm_aov2),
+     xlab = "Fitted", ylab = "Residuals",
+     main = "Residuals vs. Fitted")
+```
+
+```{r, include=FALSE, echo=FALSE}
+# Check normality
+qqnorm(residuals(wm_aov2))
+qqline(residuals(wm_aov2))
+
+
+```
+
+```{r}
+ggplot(wm, aes(x = Time, y = Score, color = Activity, group = Activity)) +
+  stat_summary(fun = mean, geom = "point", position = position_dodge(0.2)) +
+  stat_summary(fun = mean, geom = "line", position = position_dodge(0.2)) +
+  facet_wrap(~ User) +
+  labs(title = "Interaction Plot: Time x Activity\nBy Users 1-4") +
+  theme_minimal()
 ```
 
 ### Random effect of studying the interaction of blocking factor
@@ -89,4 +168,31 @@ summary(wm_lmer2)
 
 ```{r}
 ranova(wm_lmer2)
+```
+
+```{r}
+# Check normality
+qqnorm(residuals(wm_lmer2))
+qqline(residuals(wm_lmer2))
+
+# Check constant variance
+plot(fitted(wm_lmer2), residuals(wm_lmer2),
+     xlab = "Fitted", ylab = "Residuals",
+     main = "Residuals vs. Fitted")
+```
+
+```{r}
+# Interaction Plot
+
+# Estimate Marginal Means
+emm_wm_lmer2 <- emmeans(wm_lmer2, ~ Time * Activity)
+emm_df_wm_lmer2 <- as.data.frame(emm_wm_lmer2) # as DF
+
+# Interaction plot
+ggplot(emm_df_wm_lmer2, aes(x = Time, y = emmean, group = Activity, color = Activity)) +
+  geom_point(size = 3) +
+  geom_line() +
+  labs(title = "Interaction Plot: Time x Activity\nRandom effect of studying the interaction of blocking factor", 
+       y = "Estimated Marginal Mean of Score") +
+  theme_minimal()
 ```
