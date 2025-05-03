@@ -1,0 +1,92 @@
+---
+title: "Final Project"
+author: Morgan Godley, Priom Mahmud, Qin Xu, Chaobo Yan
+output: pdf_document
+---
+
+## Model Assumption
+
+$$
+\begin{aligned}
+y_{ijk} = \mu + \tau_i+\beta_j+ \left(\tau\beta\right)_{ij} +\gamma_k + \epsilon_{ijk}
+\end{aligned}
+$$
+
+where $\mu$ is the overall mean, $\tau_i$ is the mean of activity (walking and meditation)
+
+```{r}
+wm <- read.csv("final_data.csv")
+wm$User <- as.factor(wm$User)
+wm$Time <- as.factor(wm$Time)
+wm$Activity <- as.factor(wm$Activity)
+```
+
+### Random effect of not studying the interaction of blocking factor
+
+```{r}
+library(lmerTest)
+wm_lmer <- lmer(Score ~ Time * Activity + (1|User),
+                data = wm,
+                contrasts = list(Time = "contr.helmert",
+                Activity = "contr.helmert"))
+```
+
+```{r}
+summary(wm_lmer)
+```
+
+```{r}
+ranova(wm_lmer)
+```
+
+```{r}
+plot(wm_lmer,which=4)
+```
+
+### Fixed effect of not studying the interaction of blocking factor
+
+```{r}
+wm_aov <- aov(Score ~ Time * Activity + User,
+                data = wm,
+                contrasts = list(Time = "contr.helmert",
+                Activity = "contr.helmert"))
+```
+
+```{r}
+summary(wm_aov)
+```
+
+```{r}
+plot(wm_aov2,which=2)
+```
+
+### Fixed effect of study the interaction of blocking factor
+
+```{r}
+wm_aov2 <- aov(Score ~ Time * Activity * User,
+                data = wm,
+                contrasts = list(Time = "contr.helmert",
+                Activity = "contr.helmert"))
+```
+
+```{r}
+anova(wm_aov2)
+```
+
+### Random effect of studying the interaction of blocking factor
+
+```{r}
+wm_lmer2 <- lmer(Score ~ Time * Activity
+                 + (Time + Activity|User),
+                data = wm,
+                contrasts = list(Time = "contr.helmert",
+                Activity = "contr.helmert"))
+```
+
+```{r}
+summary(wm_lmer2)
+```
+
+```{r}
+ranova(wm_lmer2)
+```
