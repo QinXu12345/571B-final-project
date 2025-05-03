@@ -40,19 +40,16 @@ ranova(wm_lmer)
 ```
 
 ```{r}
+layout(matrix(1:6, 2, 3)); par(mar = c(4, 4, 2.5, 1.5))
 # Check normality
 qqnorm(residuals(wm_lmer))
 qqline(residuals(wm_lmer))
 
 #Residuals
-plot(wm_lmer,which=4)
-```
-```{r, include=FALSE, echo=FALSE}
-
-# Check constant variance
-plot(fitted(wm_lmer), residuals(wm_lmer),
-     xlab = "Fitted", ylab = "Residuals",
-     main = "Residuals vs. Fitted")
+plot(wm$Time, rstudent(wm_lmer), main = "Constant Variance - Time") 
+plot(wm$Activity, rstudent(wm_lmer), main = "Constant Variance - Activity")
+plot(fitted(wm_lmer), resid(wm_lmer), main = "Constant Variance")
+#plot(wm_lmer,which=4)
 ```
 
 ```{r}
@@ -87,14 +84,15 @@ summary(wm_aov)
 ```
 
 ```{r}
+layout(matrix(1:6, 2, 3)); par(mar = c(4, 4, 2.5, 1.5))
 # Check normality
 qqnorm(residuals(wm_aov))
 qqline(residuals(wm_aov))
 
 # Check constant variance
-plot(fitted(wm_aov), residuals(wm_aov),
-     xlab = "Fitted", ylab = "Residuals",
-     main = "Residuals vs. Fitted")
+plot(wm$Time, rstudent(wm_aov), main = "Constant Variance - Time") 
+plot(wm$Activity, rstudent(wm_aov), main = "Constant Variance - Activity")
+plot(fitted(wm_aov), resid(wm_aov), main = "Constant Variance")
 ```
 
 ```{r}
@@ -127,16 +125,21 @@ anova(wm_aov2)
 ```
 
 ```{r}
-plot(wm_aov2,which=2)
+layout(matrix(1:6, 2, 3)); par(mar = c(4, 4, 2.5, 1.5))
+# Check normality
+qqnorm(residuals(wm_aov2))
+qqline(residuals(wm_aov2))
 
 # Check constant variance
-plot(fitted(wm_aov2), residuals(wm_aov2),
-     xlab = "Fitted", ylab = "Residuals",
-     main = "Residuals vs. Fitted")
+plot(wm$Time, rstudent(wm_aov2), main = "Constant Variance - Time") 
+plot(wm$Activity, rstudent(wm_aov2), main = "Constant Variance - Activity")
+plot(fitted(wm_aov2), resid(wm_aov2), main = "Constant Variance")
 ```
 
 ```{r, include=FALSE, echo=FALSE}
 # Check normality
+plot(wm_aov2,which=2)
+
 qqnorm(residuals(wm_aov2))
 qqline(residuals(wm_aov2))
 
@@ -171,14 +174,15 @@ ranova(wm_lmer2)
 ```
 
 ```{r}
+layout(matrix(1:6, 2, 3)); par(mar = c(4, 4, 2.5, 1.5))
 # Check normality
 qqnorm(residuals(wm_lmer2))
 qqline(residuals(wm_lmer2))
 
 # Check constant variance
-plot(fitted(wm_lmer2), residuals(wm_lmer2),
-     xlab = "Fitted", ylab = "Residuals",
-     main = "Residuals vs. Fitted")
+plot(wm$Time, rstudent(wm_lmer2), main = "Constant Variance - Time") 
+plot(wm$Activity, rstudent(wm_lmer2), main = "Constant Variance - Activity")
+plot(fitted(wm_lmer2), resid(wm_lmer2), main = "Constant Variance")
 ```
 
 ```{r}
