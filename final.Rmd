@@ -125,14 +125,6 @@ anova(wm_aov2)
 ```
 
 ```{r}
-<<<<<<< HEAD
-interaction.plot(wm$Time,wm$Activity,
-                 response = wm$Score,
-                 trace.label = "Activity",
-                 xlab = "Time",
-                 ylab = "Score",
-                 col = c("green","red"))
-=======
 layout(matrix(1:6, 2, 3)); par(mar = c(4, 4, 2.5, 1.5))
 # Check normality
 qqnorm(residuals(wm_aov2))
@@ -161,7 +153,6 @@ ggplot(wm, aes(x = Time, y = Score, color = Activity, group = Activity)) +
   facet_wrap(~ User) +
   labs(title = "Interaction Plot: Time x Activity\nBy Users 1-4") +
   theme_minimal()
->>>>>>> c60e8569403a7c228e1b0b7f7a91c8b33ee841eb
 ```
 
 ### Random effect of studying the interaction of blocking factor
