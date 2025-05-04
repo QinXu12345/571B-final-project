@@ -73,6 +73,15 @@ wm_aov2 <- aov(Score ~ Time * Activity * User,
 anova(wm_aov2)
 ```
 
+```{r}
+interaction.plot(wm$Time,wm$Activity,
+                 response = wm$Score,
+                 trace.label = "Activity",
+                 xlab = "Time",
+                 ylab = "Score",
+                 col = c("green","red"))
+```
+
 ### Random effect of studying the interaction of blocking factor
 
 ```{r}
