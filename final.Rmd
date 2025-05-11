@@ -200,3 +200,25 @@ ggplot(emm_df_wm_lmer2, aes(x = Time, y = emmean, group = Activity, color = Acti
        y = "Estimated Marginal Mean of Score") +
   theme_minimal()
 ```
+
+```{r}
+library(pwr)
+# k - 4 groups
+# n - 64 total samples divied by 4 groups
+# f - Cohen's f = delta / std_dev; std_dev assumed to be 2
+# alpha - 0.05
+
+power01 <- pwr.anova.test(k=4, n=64/4, f=0.1/2, sig.level=0.05)
+power1 <- pwr.anova.test(k=4, n=64/4, f=1/2, sig.level=0.05)
+power3 <- pwr.anova.test(k=4, n=64/4, f=3/2, sig.level=0.05)
+power5 <- pwr.anova.test(k=4, n=64/4, f=5/2, sig.level=0.05)
+
+print("Power at Difference in Mean 0.1")
+power01
+print("\nPower at Difference in Mean 1")
+power1
+print("\nPower at Difference in Mean 3")
+power3
+print("\nPower at Difference in Mean 5")
+power5
+```
