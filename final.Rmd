@@ -4,7 +4,7 @@ author: Morgan Godley, Priom Mahmud, Qin Xu, Chaobo Yan
 output: pdf_document
 ---
 
-## Method and Analysis
+## 1. Method and Analysis
 
 ### Model Assumption
 
@@ -24,7 +24,8 @@ In the case of team member as a random effect, we assume $k \sim N\left(\gamma_k
 
 Due to the availability of our experiment are easy to be executed and the cost is free, we show a $2^2$ full factorial design to each team member. Here is the design table:
 
-```{r echo = FALSE}
+```{r echo = FALSE, warning=FALSE}
+#showing the design table
 levels <- factor(c("-","+"))
 users <- factor(c("Team member 1",
                   "Team member 2",
@@ -60,9 +61,9 @@ However, we might find there is not too much evidence to show our assumption fro
 
 Except for testing the hypothesis, we also investigate which activity has a higher average effect on the mood change, how the time of day affect the mood change and its interaction with the activity, the impact of personal favorite and interactions etc.
 
-### Test Power 
+### Test Power
 
-To balance the executability of the experiment (sample size/replicate) and the power of the test, we can pre-set the difference of mean change and the power of the test to a certain level and calculate the number of samples we need to reach such a level. Of course, more samples means higher power but we might have to reduce the optimal sample size for sake of availability of each team member. Since we haven\'t started the experiment yet, we can assume we have some pilot data from any other four UA graduate students by randomly sampling the uniform random samples from -10 to 10 to get some approximating and general ideas of the power of the test. Here is the table of power of the test for some reasonable difference value and sample size are set at  the significance level 0.05:
+To balance the executability of the experiment (sample size/replicate) and the power of the test, we can pre-set the difference of mean change and the power of the test to a certain level and calculate the number of samples we need to reach such a level. Of course, more samples means higher power but we might have to reduce the optimal sample size for sake of availability of each team member. Since we haven't started the experiment yet, we can assume we have some pilot data from any other four UA graduate students by randomly sampling the uniform random samples from -10 to 10 to get some approximating and general ideas of the power of the test. Here is the table of power of the test for some reasonable difference value and sample size are set at  the significance level 0.05:
 
 |                   |                           |                 |
 |-------------------|---------------------------|-----------------|
@@ -74,16 +75,24 @@ To balance the executability of the experiment (sample size/replicate) and the p
 
 We do not consider any design with sample size over 100 because of the availability and time constraints. There are considerable sample sizes, for example, to test the difference in mean change within 3 with power 0.8, we only need 64 samples for each treatment in total meaning 4 replicates for each team member in the morning or afternoon per treatment roughly.
 
+### Load Data
+
 ```{r echo = FALSE}
+# load the data and tranform them to factor
+
 wm <- read.csv("final_data.csv")
 wm$User <- as.factor(wm$User)
 wm$Time <- as.factor(wm$Time)
 wm$Activity <- as.factor(wm$Activity)
 ```
 
-### Random effect of not studying the interaction of blocking factor
+## 2. Results
 
-```{r}
+### Case 1: Random effect of not studying the interaction of blocking factor (main study)
+
+```{r warning= FALSE}
+# Perform lmer anova with team member as random effect
+
 library(lmerTest)
 wm_lmer <- lmer(Score ~ Time * Activity + (1|User),
                 data = wm,
@@ -92,10 +101,14 @@ wm_lmer <- lmer(Score ~ Time * Activity + (1|User),
 ```
 
 ```{r}
+# show two-way anova with random effect
+
 summary(wm_lmer)
 ```
 
 ```{r}
+# check the significance on random effect (Team member)
+
 ranova(wm_lmer)
 ```
 
@@ -112,7 +125,7 @@ plot(fitted(wm_lmer), resid(wm_lmer), main = "Constant Variance")
 #plot(wm_lmer,which=4)
 ```
 
-```{r}
+```{r warning=FALSE}
 # Interaction Plot
 
 # Estimate Marginal Means
@@ -130,9 +143,11 @@ ggplot(emm_df_wm_lmer, aes(x = Time, y = emmean, group = Activity, color = Activ
   theme_minimal()
 ```
 
-### Fixed effect of not studying the interaction of blocking factor
+### Case 2: Fix effect of not studying the interaction of blocking factor
 
 ```{r}
+# Perform anova where team member as fix effect
+
 wm_aov <- aov(Score ~ Time * Activity + User,
                 data = wm,
                 contrasts = list(Time = "contr.helmert",
@@ -140,6 +155,8 @@ wm_aov <- aov(Score ~ Time * Activity + User,
 ```
 
 ```{r}
+# show two-way anova with fix effect
+
 summary(wm_aov)
 ```
 
@@ -171,9 +188,11 @@ ggplot(emm_df_wm_aov, aes(x = Time, y = emmean, group = Activity, color = Activi
   theme_minimal()
 ```
 
-### Fixed effect of study the interaction of blocking factor
+### Case 3: Fixed effect of study the interaction of blocking factor
 
 ```{r}
+# Perform anova where team member as fix effect
+
 wm_aov2 <- aov(Score ~ Time * Activity * User,
                 data = wm,
                 contrasts = list(Time = "contr.helmert",
@@ -181,6 +200,8 @@ wm_aov2 <- aov(Score ~ Time * Activity * User,
 ```
 
 ```{r}
+# show three-way anova with fix effect
+
 anova(wm_aov2)
 ```
 
@@ -207,6 +228,8 @@ qqline(residuals(wm_aov2))
 ```
 
 ```{r}
+# plot the interaction
+
 ggplot(wm, aes(x = Time, y = Score, color = Activity, group = Activity)) +
   stat_summary(fun = mean, geom = "point", position = position_dodge(0.2)) +
   stat_summary(fun = mean, geom = "line", position = position_dodge(0.2)) +
@@ -215,9 +238,11 @@ ggplot(wm, aes(x = Time, y = Score, color = Activity, group = Activity)) +
   theme_minimal()
 ```
 
-### Random effect of studying the interaction of blocking factor
+### Case 4: Random effect of studying the interaction of blocking factor
 
 ```{r}
+# Perform lmer anova where team member as random effect
+
 wm_lmer2 <- lmer(Score ~ Time * Activity
                  + (Time + Activity|User),
                 data = wm,
@@ -226,10 +251,15 @@ wm_lmer2 <- lmer(Score ~ Time * Activity
 ```
 
 ```{r}
+# show three-way anova with random effect
+
 summary(wm_lmer2)
 ```
 
 ```{r}
+# check the significance on random effect (Team member) 
+# and the interactions
+
 ranova(wm_lmer2)
 ```
 
